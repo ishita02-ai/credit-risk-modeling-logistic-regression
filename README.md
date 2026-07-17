@@ -121,19 +121,6 @@ Key findings include:
 
 ---
 
-## Repository Structure
-
-```
-├── data/
-├── notebook/
-│   └── Credit_Risk_Model.ipynb
-├── report/
-│   └── Project_Report.pdf
-├── images/
-├── requirements.txt
-└── README.md
-```
-
 ---
 
 ## Future Improvements
