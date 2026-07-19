@@ -1,178 +1,120 @@
-# 📊 Loan Default Prediction using Logistic Regression
+```markdown
+# Loan Default Prediction
 
-## Overview
+End-to-end statistical modeling pipeline to predict the probability of borrower default on a real-world residential mortgage loan portfolio, combining rigorous statistical validation with business-driven feature engineering.
 
-This project develops an interpretable **Loan Default Prediction** model using statistical modeling techniques to identify borrowers with a higher probability of default. The objective is to assist financial institutions in making informed lending decisions by combining rigorous statistical analysis with business-driven feature engineering.
+---
 
-The project follows a complete analytical workflow, including data preprocessing, exploratory data analysis, feature engineering, statistical significance testing, Weight of Evidence (WOE) encoding, Information Value (IV) analysis, multicollinearity assessment, predictive modeling, and business-oriented model evaluation.
+## Objective
+
+Identify borrowers at higher risk of default and build a statistically sound, interpretable predictive model that a credit risk team could realistically use to prioritize applications for review — while explicitly testing for and correcting data leakage rather than reporting an inflated headline metric.
 
 ---
 
 ## Dataset
 
-* **Total Records:** 148,670 mortgage loan applications
-* **Original Features:** 34
-* **Target Variable:** `Status`
-
-  * **0:** Good Loan
-  * **1:** Default
+- **148,670** residential mortgage loan records
+- **34** original features
+- **Target variable:** `Status` — Good (0) / Default (1)
+- **Class split:** 75.4% Good, 24.6% Default
 
 ---
 
 ## Project Workflow
 
-### 1. Data Preparation
+1. **Data Cleaning & Imputation** — Handled missing values (income, rate_of_interest, property_value, Upfront_charges, Interest_rate_spread, dtir1) using distribution-aware, bucket-based imputation (e.g. median values grouped by loan-amount × income buckets) instead of simple global mean/median fills. LTV was recomputed directly from its definition rather than imputed. Dropped low-value/near-constant identifier fields.
 
-* Removed non-informative variables
-* Treated invalid zero values as missing where appropriate
-* Performed bucket-based median and mode imputation
-* Recalculated Loan-to-Value (LTV) instead of imputing it directly
-* Created a clean dataset with minimal missing values
+2. **Exploratory Data Analysis** — Profiled default rates across region, loan purpose, income quartile, LTV bucket, and credit score band to surface intuitive risk drivers.
 
----
+3. **Feature Engineering** — Engineered `loan_income_ratio` as a direct affordability measure, plus three candidate features tested as explicit hypotheses rather than assumed useful:
+   - `payment_ratio` (loan_amount / term)
+   - `leverage_score` (dtir1 × loan_income_ratio)
+   - `credit_type_mismatch` (applicant vs. co-applicant credit-reporting agency)
 
-### 2. Exploratory Data Analysis
+4. **Statistical Significance Testing** — Chi-Square tests (categorical variables) and Mann-Whitney U tests (continuous variables) against `Status`, keeping only statistically significant predictors (p < 0.05).
 
-Analyzed default behaviour across multiple borrower characteristics, including:
+5. **Weight of Evidence (WOE) & Information Value (IV)** — Transformed all predictors via WOE and ranked by IV to quantify standalone predictive strength; dropped negligible-IV variables.
 
-* Income
-* Loan Purpose
-* Region
-* Loan-to-Value (LTV)
-* Credit Score
-* Property Value
-* Credit Reporting Agency
+6. **Multicollinearity Control (VIF)** — Applied Variance Inflation Factor analysis to the WOE-encoded feature set to eliminate redundant, highly correlated predictors.
 
-The analysis helped identify meaningful business patterns before model development.
+7. **Data Leakage Audit** — Built an initial model, diagnosed unrealistically strong performance as target leakage from fields set at/after the underwriting decision, removed them, and retrained on a leakage-free feature set.
+
+8. **Predictive Modeling** — Final interpretable Logistic Regression model, evaluated on a held-out 30% test set.
 
 ---
 
-### 3. Feature Engineering
+## Tech Stack
 
-Engineered additional business-relevant variables, including:
-
-* **Loan-to-Income Ratio**
-* **Payment Ratio**
-* **Leverage Score**
-* **Credit Type Mismatch**
-
-Each engineered feature was statistically evaluated before inclusion in the final model.
-
----
-
-### 4. Statistical Validation
-
-Performed statistical tests to ensure predictor relevance.
-
-**Categorical Variables**
-
-* Chi-Square Test
-
-**Continuous Variables**
-
-* Mann–Whitney U Test
-
-Only statistically significant variables were retained.
+- numpy
+- pandas
+- matplotlib
+- seaborn
+- scikit-learn
+- scipy
+- statsmodels
+- scorecardpy
 
 ---
 
-### 5. Feature Selection
+## Results
 
-Applied:
+**Model discriminatory power:**
 
-* Weight of Evidence (WOE) Encoding
-* Information Value (IV) Analysis
-* Variance Inflation Factor (VIF)
+| Metric | Value |
+|---|---|
+| ROC-AUC | 0.754 |
+| Gini Coefficient | 0.507 |
+| KS Statistic | 0.388 (optimal threshold = 0.304) |
 
-This helped:
+**Decile risk ranking (business interpretation):**
 
-* Measure predictor strength
-* Remove weak variables
-* Eliminate multicollinearity
-* Improve model interpretability
+- The riskiest decile alone shows a **67% default rate** and captures **27% of all defaults** in the portfolio
+- The **top 3 riskiest deciles together capture ~59% of all defaults**, while covering only 30% of the loan pipeline
+- Enables risk teams to prioritize the highest-risk ~30% of applications for manual underwriting review, independent of the exact classification threshold used
 
----
+**Classification performance:**
 
-### 6. Predictive Modeling
+At the standard 0.5 threshold:
 
-Developed an interpretable **Logistic Regression** model.
+| Class | Precision | Recall | F1-score |
+|---|---|---|---|
+| Good (0) | 80.4% | 95.0% | 87.1% |
+| Default (1) | 65.8% | 29.2% | 40.5% |
 
-Model evaluation included:
+At the KS-optimal threshold (0.304) — trading precision for materially better default detection:
 
-* Accuracy
-* Precision
-* Recall
-* F1-Score
-* ROC-AUC
-* Gini Coefficient
-* KS Statistic
+| Class | Precision | Recall | F1-score |
+|---|---|---|---|
+| Default (1) | 49.4% | 58.5% | 53.5% |
 
----
+**Overall Accuracy: 78.8%**
 
-## Final Model Performance
-
-| Metric           |     Value |
-| ---------------- | --------: |
-| Accuracy         | **78.8%** |
-| ROC-AUC          | **0.754** |
-| Gini Coefficient | **0.507** |
-
----
-
-## Business Evaluation
-
-In addition to traditional machine learning metrics, the project includes **Decile Analysis** for practical business interpretation.
-
-The model enables lenders to:
-
-* Rank borrowers according to default risk
-* Prioritize high-risk applications for manual review
-* Improve underwriting decisions
-* Support portfolio risk management
-* Allocate resources more efficiently
-
----
-
-## Technologies Used
-
-### Programming Language
-
-* Python
-
-### Libraries
-
-* pandas
-* numpy
-* matplotlib
-* seaborn
-* scikit-learn
-* scipy
-* statsmodels
-* scorecardpy
+Threshold choice is a business decision, not just a statistical one — the standard 0.5 cutoff favors overall accuracy, while the KS-optimal cutoff favors catching more true defaults.
 
 ---
 
 ## Key Learning Outcomes
 
-* Credit Risk Analytics
-* Statistical Modeling
-* Logistic Regression
-* Feature Engineering
-* Weight of Evidence (WOE)
-* Information Value (IV)
-* Multicollinearity Analysis
-* Model Evaluation
-* Decile Analysis
-* Business Interpretation of Predictive Models
+- Credit Risk Analytics
+- Statistical Modeling
+- Logistic Regression
+- Feature Engineering
+- Weight of Evidence (WOE)
+- Information Value (IV)
+- Multicollinearity Analysis
+- Data Leakage Detection & Correction
+- Model Evaluation (ROC-AUC, Gini, KS, Precision/Recall)
+- Decile Analysis
+- Business Interpretation of Predictive Models
 
 ---
 
 ## Future Improvements
 
-* Compare Logistic Regression with tree-based ensemble models.
-* Perform probability calibration for improved risk estimation.
-* Build an interactive dashboard for model predictions and portfolio monitoring.
-* Incorporate model explainability techniques such as SHAP for feature-level interpretation.
+- Compare Logistic Regression with tree-based ensemble models.
+- Perform probability calibration for improved risk estimation.
+- Build an interactive dashboard for model predictions and portfolio monitoring.
+- Incorporate model explainability techniques such as SHAP for feature-level interpretation.
 
 ---
 
@@ -183,3 +125,4 @@ The model enables lenders to:
 M.Sc. Statistics | Presidency University, Kolkata
 
 Interested in **Credit Risk Analytics**, **Statistical Modeling**, **Risk Analytics**, and **Data Analytics**.
+```
