@@ -1,4 +1,3 @@
-```markdown
 # Loan Default Prediction
 
 End-to-end statistical modeling pipeline to predict the probability of borrower default on a real-world residential mortgage loan portfolio, combining rigorous statistical validation with business-driven feature engineering.
@@ -125,4 +124,3 @@ Threshold choice is a business decision, not just a statistical one — the stan
 M.Sc. Statistics | Presidency University, Kolkata
 
 Interested in **Credit Risk Analytics**, **Statistical Modeling**, **Risk Analytics**, and **Data Analytics**.
-```
