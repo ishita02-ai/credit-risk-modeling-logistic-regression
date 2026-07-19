@@ -1,136 +1,178 @@
-# Credit Risk Modeling using Logistic Regression
+# 📊 Loan Default Prediction using Logistic Regression
 
-## Project Overview
+## Overview
 
-This project presents an end-to-end **Credit Risk Modeling** workflow for predicting loan default using **Logistic Regression**. The objective is to estimate the probability of borrower default before loan approval and support data-driven lending decisions through an interpretable scorecard-style model. :contentReference[oaicite:0]{index=0}
+This project develops an interpretable **Loan Default Prediction** model using statistical modeling techniques to identify borrowers with a higher probability of default. The objective is to assist financial institutions in making informed lending decisions by combining rigorous statistical analysis with business-driven feature engineering.
 
-The project follows a complete banking analytics pipeline, including business-oriented preprocessing, feature engineering, statistical validation, WOE transformation, leakage detection, model development, and performance evaluation.
-
----
-
-## Business Objective
-
-Financial institutions face the challenge of identifying high-risk borrowers while maintaining a healthy loan portfolio. This project aims to:
-
-- Predict the probability of loan default.
-- Identify key borrower characteristics associated with credit risk.
-- Build an interpretable model suitable for lending decisions.
-- Segment borrowers based on predicted risk.
+The project follows a complete analytical workflow, including data preprocessing, exploratory data analysis, feature engineering, statistical significance testing, Weight of Evidence (WOE) encoding, Information Value (IV) analysis, multicollinearity assessment, predictive modeling, and business-oriented model evaluation.
 
 ---
 
 ## Dataset
 
-The dataset contains borrower demographic, financial, and loan-related information used to model loan default behaviour. Missing values were treated using business-driven imputation strategies before analysis. :contentReference[oaicite:1]{index=1}
+* **Total Records:** 148,670 mortgage loan applications
+* **Original Features:** 34
+* **Target Variable:** `Status`
+
+  * **0:** Good Loan
+  * **1:** Default
 
 ---
 
 ## Project Workflow
 
-1. Data Cleaning & Missing Value Treatment
-2. Exploratory Data Analysis (EDA)
-3. Feature Engineering
-4. Statistical Feature Selection
-   - Chi-Square Test
-   - Mann–Whitney U Test
-5. Weight of Evidence (WOE) Transformation
-6. Information Value (IV) Analysis
-7. Leakage Detection
-8. Multicollinearity Check (VIF)
-9. Logistic Regression Modeling
-10. Model Evaluation
-11. KS Statistic
-12. Decile Analysis
-13. Variable Importance
+### 1. Data Preparation
+
+* Removed non-informative variables
+* Treated invalid zero values as missing where appropriate
+* Performed bucket-based median and mode imputation
+* Recalculated Loan-to-Value (LTV) instead of imputing it directly
+* Created a clean dataset with minimal missing values
 
 ---
 
-## Feature Engineering
+### 2. Exploratory Data Analysis
 
-The following business-oriented variables were engineered:
+Analyzed default behaviour across multiple borrower characteristics, including:
 
-- Loan-to-Income Ratio
-- Property Cushion Percentage
-- High DTI Flag
-- High Income Flag
-- Large Loan Flag
+* Income
+* Loan Purpose
+* Region
+* Loan-to-Value (LTV)
+* Credit Score
+* Property Value
+* Credit Reporting Agency
 
-These variables improve model interpretability by capturing borrower affordability, leverage, and repayment capacity.
-
----
-
-## Statistical Techniques
-
-- Chi-Square Test
-- Mann–Whitney U Test
-- Weight of Evidence (WOE)
-- Information Value (IV)
-- Variance Inflation Factor (VIF)
-- Logistic Regression
+The analysis helped identify meaningful business patterns before model development.
 
 ---
 
-## Model Evaluation
+### 3. Feature Engineering
 
-The final model was evaluated using:
+Engineered additional business-relevant variables, including:
 
-- ROC-AUC
-- Gini Coefficient
-- KS Statistic
-- Precision
-- Recall
-- F1 Score
-- Confusion Matrix
-- Decile Analysis
+* **Loan-to-Income Ratio**
+* **Payment Ratio**
+* **Leverage Score**
+* **Credit Type Mismatch**
 
-### Final Model Performance
-
-| Metric | Value |
-|---------|-------|
-| ROC-AUC | **0.7488** |
-| Gini | **0.4977** |
-| KS Statistic | **0.3832** |
-| Optimal Threshold | **0.2951** |
-
-These results indicate satisfactory discriminatory power for an interpretable credit risk scorecard model. :contentReference[oaicite:2]{index=2}
+Each engineered feature was statistically evaluated before inclusion in the final model.
 
 ---
 
-## Business Insights
+### 4. Statistical Validation
 
-Key findings include:
+Performed statistical tests to ensure predictor relevance.
 
-- Loan-to-Value (LTV) emerged as one of the strongest predictors of default.
-- Borrowers with higher repayment burden exhibited higher default risk.
-- Negative amortization significantly increased credit risk.
-- Decile analysis effectively ranked borrowers according to default probability.
-- Leakage detection substantially improved model reliability before final deployment. :contentReference[oaicite:3]{index=3}
+**Categorical Variables**
+
+* Chi-Square Test
+
+**Continuous Variables**
+
+* Mann–Whitney U Test
+
+Only statistically significant variables were retained.
+
+---
+
+### 5. Feature Selection
+
+Applied:
+
+* Weight of Evidence (WOE) Encoding
+* Information Value (IV) Analysis
+* Variance Inflation Factor (VIF)
+
+This helped:
+
+* Measure predictor strength
+* Remove weak variables
+* Eliminate multicollinearity
+* Improve model interpretability
+
+---
+
+### 6. Predictive Modeling
+
+Developed an interpretable **Logistic Regression** model.
+
+Model evaluation included:
+
+* Accuracy
+* Precision
+* Recall
+* F1-Score
+* ROC-AUC
+* Gini Coefficient
+* KS Statistic
+
+---
+
+## Final Model Performance
+
+| Metric           |     Value |
+| ---------------- | --------: |
+| Accuracy         | **78.8%** |
+| ROC-AUC          | **0.754** |
+| Gini Coefficient | **0.507** |
+
+---
+
+## Business Evaluation
+
+In addition to traditional machine learning metrics, the project includes **Decile Analysis** for practical business interpretation.
+
+The model enables lenders to:
+
+* Rank borrowers according to default risk
+* Prioritize high-risk applications for manual review
+* Improve underwriting decisions
+* Support portfolio risk management
+* Allocate resources more efficiently
 
 ---
 
 ## Technologies Used
 
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Scikit-learn
-- SciPy
-- ScorecardPy
+### Programming Language
+
+* Python
+
+### Libraries
+
+* pandas
+* numpy
+* matplotlib
+* seaborn
+* scikit-learn
+* scipy
+* statsmodels
+* scorecardpy
 
 ---
+
+## Key Learning Outcomes
+
+* Credit Risk Analytics
+* Statistical Modeling
+* Logistic Regression
+* Feature Engineering
+* Weight of Evidence (WOE)
+* Information Value (IV)
+* Multicollinearity Analysis
+* Model Evaluation
+* Decile Analysis
+* Business Interpretation of Predictive Models
 
 ---
 
 ## Future Improvements
 
-- Gradient Boosting Models
-- XGBoost
-- Probability Calibration
-- Hyperparameter Optimization
-- Scorecard Scaling
-- Population Stability Index (PSI)
+* Compare Logistic Regression with tree-based ensemble models.
+* Perform probability calibration for improved risk estimation.
+* Build an interactive dashboard for model predictions and portfolio monitoring.
+* Incorporate model explainability techniques such as SHAP for feature-level interpretation.
 
 ---
 
@@ -138,5 +180,6 @@ Key findings include:
 
 **Ishita Mitra**
 
-M.Sc. Statistics  
-Interested in Credit Risk Analytics, Statistical Modeling, and Data Analytics.
+M.Sc. Statistics | Presidency University, Kolkata
+
+Interested in **Credit Risk Analytics**, **Statistical Modeling**, **Risk Analytics**, and **Data Analytics**.
